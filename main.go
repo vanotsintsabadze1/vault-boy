@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/vanotsintsabadze1/vault-boy/cmd"
 
 func main() {
-	fmt.Println("a ...any")
+	cmd.Execute()
 }
