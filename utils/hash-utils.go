@@ -18,7 +18,7 @@ func HashVaultPassword(password string) string {
 		memory:      64 * 1024,
 		iterations:  3,
 		parallelism: 2,
-		keyLength:   32,
+		keyLength:   128,
 	}
 
 	var passwordHash = generateHashFromPassword(password, params)
