@@ -16,17 +16,21 @@ func InitializeVaultDir() {
 	}
 
 	var vault, password = getVaultAndPw()
-
 	var vaultPath = filepath.Join(home, misc.AppDirName, vault)
-	var err = os.MkdirAll(vaultPath, 0755)
+
+	err := createVaultDirectory(vaultPath)
 
 	if err != nil {
 		panic(err)
 	}
 
-	var hashedPw = HashVaultPassword(password)
+	var vaultNameWithExtension = vault + ".db"
+	var vaultDbPath = filepath.Join(vaultPath, vaultNameWithExtension)
+	db := CreateOrOpenVaultDb(vaultDbPath)
 
-	fmt.Println(hashedPw)
+	HashVaultPassword(password)
+
+	defer db.Close()
 }
 
 func getVaultAndPw() (string, string) {
@@ -39,4 +43,14 @@ func getVaultAndPw() (string, string) {
 	fmt.Scan(&password)
 
 	return vault, password
+}
+
+func createVaultDirectory(vaultPath string) error {
+	var err = os.MkdirAll(vaultPath, 0755) // 0755 means read, write & execute
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

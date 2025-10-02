@@ -2,7 +2,10 @@ module github.com/vanotsintsabadze1/vault-boy
 
 go 1.25.1
 
-require github.com/spf13/cobra v1.10.1
+require (
+	github.com/spf13/cobra v1.10.1
+	go.etcd.io/bbolt v1.4.3
+)
 
 require golang.org/x/sys v0.36.0 // indirect
 
