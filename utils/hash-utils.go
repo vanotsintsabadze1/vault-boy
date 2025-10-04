@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"encoding/base64"
-
 	"golang.org/x/crypto/argon2"
 )
 
@@ -13,21 +11,14 @@ type hashParams struct {
 	keyLength   uint32
 }
 
-func HashVaultPassword(password string) string {
+func GenerateArgon2IDKey(password string, keyLength uint32) []byte {
 	var params = &hashParams{
 		memory:      64 * 1024,
 		iterations:  3,
 		parallelism: 2,
-		keyLength:   128,
+		keyLength:   keyLength,
 	}
 
-	var passwordHash = generateHashFromPassword(password, params)
-	var encodedPassword = base64.RawStdEncoding.EncodeToString(passwordHash)
-
-	return encodedPassword
-}
-
-func generateHashFromPassword(password string, params *hashParams) []byte {
 	var hash = argon2.IDKey(
 		[]byte(password),
 		[]byte{},
