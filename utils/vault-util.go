@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -11,7 +10,7 @@ import (
 func InitializeVaultDir() {
 	vaultsDir := misc.GetVaultsDir()
 
-	var vault, password = getVaultAndPw()
+	var vault, password = GetVaultAndPw()
 	var vaultPath = filepath.Join(vaultsDir, vault)
 
 	createVaultDirectory(vaultPath)
@@ -24,18 +23,6 @@ func InitializeVaultDir() {
 	HashVaultPassword(password)
 
 	defer db.Close()
-}
-
-func getVaultAndPw() (string, string) {
-	var vault, password string
-
-	fmt.Print("Vault: ")
-	fmt.Scan(&vault)
-
-	fmt.Printf("Password for vault %s: ", vault)
-	fmt.Scan(&password)
-
-	return vault, password
 }
 
 func createVaultDirectory(vaultPath string) {
