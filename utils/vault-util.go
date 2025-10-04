@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"crypto/rand"
 	"os"
 	"path/filepath"
 
@@ -11,7 +11,7 @@ import (
 func InitializeVaultDir() {
 	vaultsDir := misc.GetVaultsDir()
 
-	var vault, password = getVaultAndPw()
+	var vault, _ = GetVaultAndPw()
 	var vaultPath = filepath.Join(vaultsDir, vault)
 
 	createVaultDirectory(vaultPath)
@@ -21,21 +21,14 @@ func InitializeVaultDir() {
 
 	db := CreateOrOpenVaultDb(vaultDbPath)
 
-	HashVaultPassword(password)
+	// var derivedUsrPwKey = GenerateArgon2IDKey(password, 128)
+	var masterKey = generateMasterKey()
+
+	var bucket = CreateMetadataBucket(db)
+
+	bucket.Put([]byte("master-key"), masterKey)
 
 	defer db.Close()
-}
-
-func getVaultAndPw() (string, string) {
-	var vault, password string
-
-	fmt.Print("Vault: ")
-	fmt.Scan(&vault)
-
-	fmt.Printf("Password for vault %s: ", vault)
-	fmt.Scan(&password)
-
-	return vault, password
 }
 
 func createVaultDirectory(vaultPath string) {
@@ -44,4 +37,11 @@ func createVaultDirectory(vaultPath string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func generateMasterKey() []byte {
+	masterKey := make([]byte, 32)
+	rand.Read(masterKey)
+
+	return masterKey
 }
