@@ -11,7 +11,7 @@ import (
 func InitializeVaultDir() {
 	vaultsDir := misc.GetVaultsDir()
 
-	var vault, _ = GetVaultAndPw()
+	var vault, password = GetVaultAndPw()
 	var vaultPath = filepath.Join(vaultsDir, vault)
 
 	createVaultDirectory(vaultPath)
@@ -21,12 +21,13 @@ func InitializeVaultDir() {
 
 	db := CreateOrOpenVaultDb(vaultDbPath)
 
-	// var derivedUsrPwKey = GenerateArgon2IDKey(password, 128)
+	var derivedUsrPwKey = GenerateArgon2IDKey(password, 32)
 	var masterKey = generateMasterKey()
 
-	var bucket = CreateMetadataBucket(db)
+	var encryptedMasterKey = EncryptValue(derivedUsrPwKey, masterKey)
 
-	bucket.Put([]byte("master-key"), masterKey)
+	var bucket = CreateMetadataBucket(db)
+	bucket.Put([]byte("master-key"), encryptedMasterKey)
 
 	defer db.Close()
 }

@@ -49,7 +49,6 @@ func DecryptValue(key, data []byte) []byte {
 	}
 
 	var nonce, cipherText = data[:nonceSize], data[nonceSize:]
-
 	var text, decryptErr = aesgcm.Open(nil, nonce, cipherText, nil)
 
 	if decryptErr != nil {
